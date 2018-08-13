@@ -1,9 +1,9 @@
 package com.cohen.nettyclient.netty.client;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -12,11 +12,9 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
-    public static Channel channel;
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String message = String.valueOf((ByteBuf) msg);
+        String message = ((ByteBuf) msg).toString(CharsetUtil.UTF_8).replaceAll("\\n", "");
         try {
             System.out.println("client received: " + message);
         } finally {
@@ -26,8 +24,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        channel = ctx.channel();
-        super.channelActive(ctx);
+        NettyClient.channel = ctx.channel();
     }
 
     @Override

@@ -1,21 +1,29 @@
 package com.cohen.nettyclient.netty.client;
 
+import com.cohen.nettyclient.netty.server.NettyServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.stereotype.Service;
 
 /**
+ * Netty客户端
  * @author 林金成
- * @date 2018/8/128:54
+ * @date 2018/8/12 8:54
  */
+@Service
+@ConditionalOnBean(value = {NettyServer.class})
 public class NettyClient {
-    public static void main(String[] args) throws Exception {
-        String host = "127.0.0.1";
-        int port = 8080;
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
 
+    public static Channel channel;
+
+    public NettyClient() throws Exception {
+        String host = "127.0.0.1";
+        int port = 8081;
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap(); // (1)
             b.group(workerGroup); // (2)
@@ -29,19 +37,6 @@ public class NettyClient {
             });
             // Start the client.
             ChannelFuture f = b.connect(host, port).sync(); // (5)
-
-            ChannelFuture hello = NettyClientHandler.channel.writeAndFlush("hello");
-            hello.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if(channelFuture.isSuccess()){
-                        System.out.println("send success!");
-                    }else{
-                        System.out.println("send error!");
-                    }
-                }
-            });
-
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
         } finally {
