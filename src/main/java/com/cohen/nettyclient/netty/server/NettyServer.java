@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * Discards any incoming data.
  */
-//@Service
+@Service
 public class NettyServer {
 
     public NettyServer() throws Exception {

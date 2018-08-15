@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @author 林金成
  * @date 2018/8/12 8:54
  */
-//@Service
+@Service
 @ConditionalOnBean(value = {NettyServer.class})
 public class NettyClient {
 
